@@ -10,9 +10,9 @@ class Kiln < Formula
   head "https://github.com/latrani/Kiln.git", branch: "main"
 
   bottle do
-    root_url "https://github.com/latrani/homebrew-tap/releases/download/kiln-0.7.3"
-    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "b34ce10cb78f8868a22cc7492e69d01c3e71992c82be40659f035d54f28507cb"
-    sha256 cellar: :any,                 x86_64_linux: "338818a2f6d5090d51add8cb0414c2ea66ecae2edb893ed48b1325a1119f46fd"
+    root_url "https://github.com/latrani/homebrew-tap/releases/download/kiln-0.8.0"
+    sha256 cellar: :any_skip_relocation, arm64_tahoe:  "272149322ad836563cda527d6886c23b8144c29406cb9a34261c056e19b0e054"
+    sha256 cellar: :any,                 x86_64_linux: "b610c7c32ed180751bca60f289181189113f9eacbf3b56180c7d91b634540ffa"
   end
 
   depends_on "go" => :build
