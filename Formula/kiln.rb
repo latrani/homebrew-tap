@@ -28,7 +28,7 @@ class Kiln < Formula
 
   test do
     assert_match version.to_s, shell_output("#{bin}/kiln version")
-    assert_match "-allow", shell_output("#{bin}/kiln-relay 2>&1", 1)
+    assert_match "-config", shell_output("#{bin}/kiln-relay 2>&1", 1)
     assert_path_exists share/"kiln/web/index.html"
     assert_path_exists share/"kiln/web/kiln.wasm"
   end
