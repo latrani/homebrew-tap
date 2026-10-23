@@ -2,8 +2,7 @@ cask "kiln" do
   version "0.9.0-rc.1"
   sha256 "fd4761bfca735efc2985be6941622829de8305e0a01ac4f873234598f433a3ad"
 
-  url "https://github.com/latrani/Kiln/releases/download/v#{version}/Kiln-#{version}-macos-universal.zip",
-      verified: "github.com/latrani/Kiln/"
+  url "https://github.com/latrani/Kiln/releases/download/v#{version}/Kiln-#{version}-macos-universal.zip"
   name "Kiln"
   desc "MUCK client for tracking multiple characters and worlds"
   homepage "https://github.com/latrani/Kiln"
