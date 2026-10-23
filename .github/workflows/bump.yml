@@ -1,5 +1,6 @@
-# Opens a PR that moves the kiln formula to a new release. Kiln's release
-# workflow sends the kiln-release dispatch when a release is published.
+# Opens a PR that moves the kiln formula, and another that moves the kiln
+# cask, to a new release. Kiln's release workflow sends the kiln-release
+# dispatch when a release is published.
 name: bump
 
 on:
@@ -49,3 +50,51 @@ jobs:
           brew bump-formula-pr --no-fork --no-browse \
             --tag="$TAG" --revision="$REVISION" \
             "$GITHUB_REPOSITORY_OWNER/tap/kiln"
+
+  # The desktop app's cask: the release's macOS zip gives the sum. No
+  # bottles, so its branch isn't a bump-kiln-* one and publish.yml leaves
+  # it alone; merge the PR by hand once test-bot passes.
+  bump-cask:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the tap
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Not GITHUB_TOKEN: a PR opened with it doesn't start test-bot.
+          token: ${{ secrets.TAP_TOKEN }}
+
+      - name: Set up git
+        id: git_setup
+        uses: Homebrew/actions/git-user-config@eb02c69dbabdb66ff183c614f4ce7ab3c077592c # 2026.10.12.1
+
+      - name: Open cask bump PR
+        env:
+          GH_TOKEN: ${{ secrets.TAP_TOKEN }}
+          GIT_AUTHOR_NAME: ${{ steps.git_setup.outputs.name }}
+          GIT_AUTHOR_EMAIL: ${{ steps.git_setup.outputs.email }}
+          GIT_COMMITTER_NAME: ${{ steps.git_setup.outputs.name }}
+          GIT_COMMITTER_EMAIL: ${{ steps.git_setup.outputs.email }}
+          TAG: ${{ github.event.client_payload.tag || inputs.tag }}
+        run: |
+          if ! [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Want a tag like v1.2.3 (got \"$TAG\")."
+            exit 1
+          fi
+          version=${TAG#v}
+          curl --fail --location --silent --show-error --output kiln.zip \
+            "https://github.com/latrani/Kiln/releases/download/$TAG/Kiln-$version-macos-universal.zip"
+          sha=$(sha256sum kiln.zip | cut -d' ' -f1)
+          rm kiln.zip
+          sed -i -e "s/^  version \".*\"/  version \"$version\"/" \
+                 -e "s/^  sha256 \".*\"/  sha256 \"$sha\"/" Casks/kiln.rb
+          if git diff --quiet; then
+            echo "The cask is already at $TAG."
+            exit 0
+          fi
+          branch="bump-cask-kiln-$version"
+          git switch --create "$branch"
+          git commit --all --message "kiln (cask) $version"
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title "kiln (cask) $version" \
+            --body "Moves the kiln cask to $TAG. No formula changes, so this doesn't need \`brew pr-pull\`: merge it once test-bot passes."
