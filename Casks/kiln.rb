@@ -1,6 +1,6 @@
 cask "kiln" do
-  version "0.9.0-rc.1"
-  sha256 "fd4761bfca735efc2985be6941622829de8305e0a01ac4f873234598f433a3ad"
+  version "0.9.0"
+  sha256 "5253e1d2bedb4314ee127a567709429b4e3c4a5939a11e28348b6e9ccdb57d8b"
 
   url "https://github.com/latrani/Kiln/releases/download/v#{version}/Kiln-#{version}-macos-universal.zip"
   name "Kiln"
