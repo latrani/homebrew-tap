@@ -4,8 +4,8 @@ class Kiln < Formula
   # A git URL, not a tarball: Kiln reads its version from the git tag Go
   # stamps into the build, and a tarball has no .git to stamp from.
   url "https://github.com/latrani/Kiln.git",
-      tag:      "v0.9.0",
-      revision: "2caa5375c0fce2f22434aac5e30d0c7e0e448dcf"
+      tag:      "v0.9.1",
+      revision: "23075a7c0166bb64bfcf6843dbcf37454eda4018"
   license "MIT"
   head "https://github.com/latrani/Kiln.git", branch: "main"
 
